@@ -49,32 +49,46 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
+    var count1 by remember { mutableIntStateOf(0) }
+    var count2 by remember { mutableIntStateOf(0) }
+
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding)
         ) {
-            Counter()
+            Counter(
+                modifier = Modifier.background(Color(0xFFE8DEF8)),
+                count = count1
+            ) {
+                count1 = it
+            }
+
+            Counter(
+                modifier = Modifier.background(Color(0XFFE9F680)),
+                count = count2
+            ) {
+                count2 = it
+            }
         }
     }
 }
 
-
 @Composable
-fun ColumnScope.Counter(){
-
-    var count by remember { mutableIntStateOf(0) }
-    var expanded by remember { mutableStateOf(false)}
-
+fun ColumnScope.Counter(
+    modifier: Modifier = Modifier,
+    count: Int,
+    onChangeCount: (Int) -> Unit,
+) {
+//    var count by remember { mutableIntStateOf(0) }
+    var expanded by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .weight(1F)
-            .padding(8.dp)
-            .background(Color(0XFFE9F680)),
+            .padding(8.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Text(
             text = count.toString(),
             modifier = Modifier
@@ -86,13 +100,13 @@ fun ColumnScope.Counter(){
             textAlign = TextAlign.Center,
         )
 
-        val row = Row {
+        Row {
             Button(
                 modifier = Modifier
                     .weight(1f)
                     .padding(8.dp),
                 onClick = {
-                    count++
+                    onChangeCount(count + 1)
                 }
             ) {
                 Icon(
@@ -121,8 +135,8 @@ fun ColumnScope.Counter(){
                         .weight(1f)
                         .padding(8.dp),
                     onClick = {
-                        count--
-
+                        onChangeCount(count - 1)
+                        expanded = false
                     }
                 ) {
                     Text("감소")
@@ -132,7 +146,7 @@ fun ColumnScope.Counter(){
                         .weight(1f)
                         .padding(8.dp),
                     onClick = {
-                        count = 0
+                        onChangeCount(0)
                         expanded = false
                     }
                 ) {
